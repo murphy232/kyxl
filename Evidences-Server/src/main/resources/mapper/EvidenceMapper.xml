@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.evidences.mapper.EvidenceMapper">
+
+    <sql id="evidenceCriteria">
+        <where>
+            `case_id` = #{caseId}
+            <if test="keyword != null and keyword != ''">
+                AND (`name` LIKE CONCAT('%', #{keyword}, '%') OR `description` LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="type != null and type > 0">
+                AND `type` = #{type}
+            </if>
+        </where>
+    </sql>
+    
+    <select id="getEvidenceList" resultType="com.evidences.entity.Evidence">
+        SELECT `evidence_id`,
+               `name`,
+               `type`
+        FROM `evidence` <include refid="evidenceCriteria"/> LIMIT #{bounds.limit} OFFSET #{bounds.offset}
+    </select>
+
+    <select id="getEvidenceCount" resultType="int">
+        SELECT COUNT(*) AS `count` FROM `evidence` <include refid="evidenceCriteria"/>
+    </select>
+
+    <select id="getEvidenceDetail" resultType="com.evidences.entity.Evidence">
+        SELECT `evidence_id`,
+               `case_id`,
+               `name`,
+               `type`,
+               `create_time`,
+               `update_time`,
+               `description`
+        FROM `evidence` WHERE `evidence_id` = #{evidenceId}
+    </select>
+
+    <insert id="createEvidence" useGeneratedKeys="true" keyProperty="evidenceId">
+        INSERT INTO `evidence`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `case_id`,
+            <if test="name != null and name != ''">
+                `name`,
+            </if>
+            <if test="type != null and type > 0">
+                `type`,
+            </if>
+            <if test="description != null and description != ''">
+                `description`,
+            </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{caseId},
+            <if test="name != null and name != ''">
+                #{name},
+            </if>
+            <if test="type != null and type > 0">
+                #{type},
+            </if>
+            <if test="description != null and description != ''">
+                #{description},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateEvidence">
+        UPDATE `evidence`
+        <set>
+            <if test="name != null and name != ''">
+                `name` = #{name},
+            </if>
+            <if test="type != null and type > 0">
+                `type` = #{type},
+            </if>
+            <if test="description != null and description != ''">
+                `description` = #{description},
+            </if>
+            `update_time` = NOW(),
+        </set>
+        WHERE `evidence_id` = #{evidenceId}
+    </update>
+
+    <update id="updateEvidenceUpdateTime">
+        UPDATE `evidence` SET `update_time` = NOW() WHERE `evidence_id` = #{evidenceId}
+    </update>
+
+    <update id="deleteEvidence">
+        DELETE FROM `evidence` WHERE `evidence_id` = #{evidenceId}
+    </update>
+
+</mapper>
