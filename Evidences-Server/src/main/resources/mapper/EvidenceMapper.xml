@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.evidences.mapper.EvidenceMapper">
+<mapper namespace="com.evidences.evidence.mapper.EvidenceMapper">
 
-    <sql id="evidenceCriteria">
+    <select id="getEvidenceList" resultType="com.evidences.evidence.entity.Evidence">
+        SELECT SQL_CALC_FOUND_ROWS `evidence_id`,
+                                   `name`,
+                                   `type`
+        FROM `evidence`
         <where>
             `case_id` = #{caseId}
             <if test="keyword != null and keyword != ''">
@@ -13,20 +17,14 @@
                 AND `type` = #{type}
             </if>
         </where>
-    </sql>
-    
-    <select id="getEvidenceList" resultType="com.evidences.entity.Evidence">
-        SELECT `evidence_id`,
-               `name`,
-               `type`
-        FROM `evidence` <include refid="evidenceCriteria"/> LIMIT #{bounds.limit} OFFSET #{bounds.offset}
+        LIMIT #{bounds.limit} OFFSET #{bounds.offset}
     </select>
 
     <select id="getEvidenceCount" resultType="int">
-        SELECT COUNT(*) AS `count` FROM `evidence` <include refid="evidenceCriteria"/>
+        SELECT FOUND_ROWS() AS `count`
     </select>
 
-    <select id="getEvidenceDetail" resultType="com.evidences.entity.Evidence">
+    <select id="getEvidenceDetail" resultType="com.evidences.evidence.entity.Evidence">
         SELECT `evidence_id`,
                `case_id`,
                `name`,

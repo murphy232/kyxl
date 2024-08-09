@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.evidences.mapper.CaseMapper">
+<mapper namespace="com.evidences.cases.mapper.CaseMapper">
 
-    <sql id="caseCriteria">
+    <select id="getCaseList" resultType="com.evidences.cases.entity.Case">
+        SELECT SQL_CALC_FOUND_ROWS `case_id`,
+                                   `name`,
+                                   `type`,
+                                   `status`
+        FROM `case`
         <where>
             <if test="keyword != null and keyword != ''">
                 AND (`name` LIKE CONCAT('%', #{keyword}, '%') OR `description` LIKE CONCAT('%', #{keyword}, '%'))
@@ -15,21 +20,14 @@
                 AND `status` = #{status}
             </if>
         </where>
-    </sql>
-    
-    <select id="getCaseList" resultType="com.evidences.entity.Case">
-        SELECT `case_id`,
-               `name`,
-               `type`,
-               `status`
-        FROM `case` <include refid="caseCriteria"/> LIMIT #{bounds.limit} OFFSET #{bounds.offset}
+        LIMIT #{bounds.limit} OFFSET #{bounds.offset}
     </select>
 
     <select id="getCaseCount" resultType="int">
-        SELECT COUNT(*) AS `count` FROM `case` <include refid="caseCriteria"/>
+        SELECT FOUND_ROWS() AS `count`
     </select>
 
-    <select id="getCaseDetail" resultType="com.evidences.entity.Case">
+    <select id="getCaseDetail" resultType="com.evidences.cases.entity.Case">
         SELECT `case_id`,
                `name`,
                `type`,
