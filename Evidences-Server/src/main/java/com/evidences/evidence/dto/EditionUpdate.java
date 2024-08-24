@@ -8,11 +8,10 @@ import javax.validation.constraints.Positive;
 
 @Getter
 @Setter
-public class EvidenceUpdate {
+public class EditionUpdate {
     @NotNull
     @Positive
-    private Integer evidenceId;
-    private Integer type;
-    private String name;
+    private Integer editionId;
+    private String tag;
     private String description;
 }

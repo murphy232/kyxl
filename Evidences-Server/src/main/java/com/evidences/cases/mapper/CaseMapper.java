@@ -17,6 +17,8 @@ public interface CaseMapper {
 
     Case getCaseDetail(Integer caseId);
 
+    List<String> getCaseAssociatedFilenames(Integer caseId);
+
     Integer getCaseCount();
 
     Integer createCase(CaseCreate caseCreate);

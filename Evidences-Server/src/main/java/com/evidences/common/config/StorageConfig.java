@@ -12,4 +12,5 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "storage")
 public class StorageConfig {
     private String imagePath;
+    private String recyclePath;
 }

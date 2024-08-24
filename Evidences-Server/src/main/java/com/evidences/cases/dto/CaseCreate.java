@@ -1,22 +1,16 @@
 package com.evidences.cases.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Null;
-import javax.validation.constraints.Positive;
 
 @Getter
 @Setter
 public class CaseCreate {
-    @Null
+    @JsonIgnore
     private Integer caseId;
-
-    @Positive
     private Integer type;
-
-    @NotBlank
     private String name;
     private String description;
 }

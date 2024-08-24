@@ -3,11 +3,12 @@
 
 <mapper namespace="com.evidences.evidence.mapper.EvidenceMapper">
 
-    <select id="getEvidenceList" resultType="com.evidences.evidence.entity.Evidence">
+    <select id="getEvidenceList" resultType="com.evidences.evidence.dto.EvidencePreview">
         SELECT SQL_CALC_FOUND_ROWS `evidence_id`,
                                    `name`,
-                                   `type`
-        FROM `evidence`
+                                   `type`,
+                                   `preview`
+        FROM `evidence_with_preview`
         <where>
             `case_id` = #{caseId}
             <if test="keyword != null and keyword != ''">
@@ -29,10 +30,12 @@
                `case_id`,
                `name`,
                `type`,
-               `create_time`,
-               `update_time`,
                `description`
         FROM `evidence` WHERE `evidence_id` = #{evidenceId}
+    </select>
+
+    <select id="getEvidenceAssociatedFilenames" resultType="String">
+        SELECT `filename` FROM `evidence_with_filename` WHERE `evidence_id` = #{evidenceId}
     </select>
 
     <insert id="createEvidence" useGeneratedKeys="true" keyProperty="evidenceId">
@@ -76,13 +79,8 @@
             <if test="description != null and description != ''">
                 `description` = #{description},
             </if>
-            `update_time` = NOW(),
         </set>
         WHERE `evidence_id` = #{evidenceId}
-    </update>
-
-    <update id="updateEvidenceUpdateTime">
-        UPDATE `evidence` SET `update_time` = NOW() WHERE `evidence_id` = #{evidenceId}
     </update>
 
     <update id="deleteEvidence">

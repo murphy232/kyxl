@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.evidences.evidence.mapper.EditionMapper">
+
+    <select id="getEditionList" resultType="com.evidences.evidence.entity.EvidenceEdition">
+        SELECT SQL_CALC_FOUND_ROWS `edition_id`,
+                                   `tag`,
+                                   `filename`
+        FROM `evidence_edition`
+        <where>
+            <if test="evidenceId != null and evidenceId > 0">
+                AND `evidence_id` = #{evidenceId}
+            </if>
+            <if test="userId != null and userId != ''">
+                AND `user_id` = #{userId}
+            </if>
+        </where>
+        LIMIT #{bounds.limit} OFFSET #{bounds.offset}
+    </select>
+
+    <select id="getEditionCount" resultType="int">
+        SELECT FOUND_ROWS() AS `count`
+    </select>
+
+    <select id="getEditionDetail" resultType="com.evidences.evidence.dto.EditionDetail">
+        SELECT `edition_id`,
+               `evidence_id`,
+               `filename`,
+               `tag`,
+               `description`,
+               `user_id`,
+               `username`,
+               `telephone`,
+               `time`
+        FROM `edition_with_user` WHERE `edition_id` = #{editionId}
+    </select>
+
+    <insert id="createEdition" useGeneratedKeys="true" keyProperty="editionId">
+        INSERT INTO `evidence_edition`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `evidence_id`,
+            `filename`,
+            <if test="userId != null and userId != ''">
+                `user_id`,
+            </if>
+            <if test="tag != null and tag != ''">
+                `tag`,
+            </if>
+            <if test="description != null and description != ''">
+                `description`,
+            </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{evidenceId},
+            #{filename},
+            <if test="userId != null and userId != ''">
+                #{userId},
+            </if>
+            <if test="tag != null and tag != ''">
+                #{tag},
+            </if>
+            <if test="description != null and description != ''">
+                #{description},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateEdition">
+        UPDATE `evidence_edition`
+        <set>
+            <if test="tag != null and tag != ''">
+                `tag` = #{tag},
+            </if>
+            <if test="description != null and description != ''">
+                `description` = #{description},
+            </if>
+        </set>
+        WHERE `edition_id` = #{editionId}
+    </update>
+
+    <delete id="deleteEdition">
+        DELETE FROM `evidence_edition` WHERE `edition_id` = #{editionId}
+    </delete>
+
+</mapper>
