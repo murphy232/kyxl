@@ -12,12 +12,8 @@ public class CaseUpdate {
     @NotNull
     @Positive
     private Integer caseId;
+    private Integer type;
+    private Integer status;
     private String name;
     private String description;
-
-    @Positive
-    private Integer type;
-
-    @Positive
-    private Integer status;
 }

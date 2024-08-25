@@ -7,9 +7,7 @@ import com.evidences.evidence.entity.Evidence;
 import com.evidences.evidence.service.EvidenceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,21 +44,10 @@ public class EvidenceController {
         }
     }
 
-    @RequestMapping("/image")
-    public ResponseEntity<?> getEvidenceImage(@NotNull @Positive Integer evidenceId) {
-        byte[] imageBytes = evidenceService.getEvidenceImage(evidenceId);
-
-        if (imageBytes == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageBytes);
-        }
-    }
-
-    @RequestMapping("/upload")
-    public ResponseEntity<?> uploadEvidence(@Validated EvidenceCreate evidenceCreate, MultipartFile image) {
+    @RequestMapping("/create")
+    public ResponseEntity<?> createEvidence(@Validated EvidenceCreate evidenceCreate, MultipartFile image) {
         try {
-            evidenceService.uploadEvidence(evidenceCreate, image.getBytes());
+            evidenceService.createEvidence(evidenceCreate, image.getBytes());
         } catch (Exception exception) {
             return ResponseEntity.badRequest().build();
         }
@@ -76,23 +63,12 @@ public class EvidenceController {
         }
     }
 
-    @RequestMapping("/edit")
-    public ResponseEntity<?> editEvidence(@NotNull @Positive Integer evidenceId, MultipartFile image) {
-        try {
-            evidenceService.editEvidence(evidenceId, image.getBytes());
-        } catch (Exception exception) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok().build();
-    }
-
     @RequestMapping("/delete")
     public ResponseEntity<?> deleteEvidence(@NotNull @Positive Integer evidenceId) {
-        try {
-            evidenceService.deleteEvidence(evidenceId);
-        } catch (Exception exception) {
+        if (evidenceService.deleteEvidence(evidenceId)) {
+            return ResponseEntity.ok().build();
+        } else {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().build();
     }
 }

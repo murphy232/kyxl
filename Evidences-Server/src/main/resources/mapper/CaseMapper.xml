@@ -38,11 +38,17 @@
         FROM `case` WHERE `case_id` = #{caseId}
     </select>
 
+    <select id="getCaseAssociatedFilenames" resultType="String">
+        SELECT `filename` FROM `case_with_filename` WHERE `case_id` = #{caseId}
+    </select>
+
     <insert id="createCase" useGeneratedKeys="true" keyProperty="caseId">
         INSERT INTO `case`
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            `name`,
-            <if test="type != null">
+            <if test="name != null and name != ''">
+                `name`,
+            </if>
+            <if test="type != null and type > 0">
                 `type`,
             </if>
             <if test="description != null and description != ''">
@@ -51,8 +57,10 @@
         </trim>
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            #{name},
-            <if test="type != null">
+            <if test="name != null and name != ''">
+                #{name},
+            </if>
+            <if test="type != null and type > 0">
                 #{type},
             </if>
             <if test="description != null and description != ''">

@@ -1,4 +1,4 @@
-package com.evidences.cases.dto;
+package com.evidences.evidence.dto;
 
 import com.evidences.common.dto.RowBounds;
 
@@ -9,10 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Getter
 @Setter
-public class CaseCriteria {
+public class EditionCriteria {
     @JsonIgnore
     private RowBounds bounds;
-    private String keyword;
-    private Integer type;
-    private Integer status;
+    private String userId;
+    private Integer evidenceId;
 }

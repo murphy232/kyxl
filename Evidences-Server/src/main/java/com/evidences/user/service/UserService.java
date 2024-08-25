@@ -1,5 +1,7 @@
 package com.evidences.user.service;
 
+import com.evidences.user.dto.UserLogin;
+import com.evidences.user.dto.UserStatistics;
 import com.evidences.user.entity.User;
 import com.evidences.user.mapper.UserMapper;
 
@@ -15,7 +17,11 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    public User userLogin(String userId) {
-        return userMapper.getUserInfo(userId);
+    public User userLogin(UserLogin userLogin) {
+        return userMapper.userAuthorization(userLogin);
+    }
+
+    public UserStatistics getUserStatistics(String userId) {
+        return userMapper.getUserStatistics(userId);
     }
 }

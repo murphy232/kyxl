@@ -3,10 +3,18 @@
 
 <mapper namespace="com.evidences.user.mapper.UserMapper">
 
-    <select id="getUserInfo" resultType="com.evidences.user.entity.User">
+    <select id="userAuthorization" resultType="com.evidences.user.entity.User">
         SELECT `user_id`,
                `name`
-        FROM `user` WHERE `user_id` = #{userId}
+        FROM `user` WHERE `user_id` = #{username} AND `password` = #{password}
+    </select>
+    
+    <select id="getUserDetail" resultType="com.evidences.user.dto.UserStatistics">
+        SELECT `user_id`,
+               `name`,
+               `telephone`,
+               `editions`
+        FROM `user_with_statistics` WHERE `user_id` = #{userId}
     </select>
 
 </mapper>

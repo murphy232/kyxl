@@ -9,18 +9,27 @@ import com.evidences.cases.mapper.CaseMapper;
 import com.evidences.common.constant.OperationResult;
 import com.evidences.common.dto.PaginationResult;
 import com.evidences.common.helper.PaginationHelper;
+import com.evidences.common.manager.StorageManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class CaseService {
     private CaseMapper caseMapper;
+    private StorageManager storageManager;
 
     @Autowired
     public void setCaseMapper(CaseMapper caseMapper) {
         this.caseMapper = caseMapper;
+    }
+
+    @Autowired
+    public void setStorageManager(StorageManager storageManager) {
+        this.storageManager = storageManager;
     }
 
     @Transactional
@@ -46,7 +55,15 @@ public class CaseService {
         return caseMapper.updateCase(caseUpdate) == OperationResult.UPDATE_SUCCESS;
     }
 
+    @Transactional
     public boolean deleteCase(Integer caseId) {
-        return caseMapper.deleteCase(caseId) == OperationResult.DELETE_SUCCESS;
+        List<String> associatedFilenames = caseMapper.getCaseAssociatedFilenames(caseId);
+
+        if (caseMapper.deleteCase(caseId) != OperationResult.DELETE_SUCCESS) {
+            return false;
+        } else {
+            storageManager.deleteImages(associatedFilenames);
+            return true;
+        }
     }
 }

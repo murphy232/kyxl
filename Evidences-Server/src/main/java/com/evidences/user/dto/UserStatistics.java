@@ -1,13 +1,13 @@
-package com.evidences.user.entity;
+package com.evidences.user.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class User {
+public class UserStatistics {
     private String userId;
-    private String password;
     private String name;
     private String telephone;
+    private Integer editions;
 }
