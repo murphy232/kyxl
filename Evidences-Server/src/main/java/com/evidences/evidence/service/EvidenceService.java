@@ -2,9 +2,9 @@ package com.evidences.evidence.service;
 
 import com.evidences.common.constant.OperationResult;
 import com.evidences.common.dto.PaginationResult;
-import com.evidences.common.helper.PaginationHelper;
-import com.evidences.common.helper.TransactionHelper;
 import com.evidences.common.manager.StorageManager;
+import com.evidences.common.util.PaginationUtils;
+import com.evidences.common.util.TransactionUtils;
 
 import com.evidences.evidence.dto.EvidenceCreate;
 import com.evidences.evidence.dto.EvidenceQuery;
@@ -44,9 +44,9 @@ public class EvidenceService {
 
     @Transactional
     public PaginationResult getEvidenceList(EvidenceQuery evidenceQuery) {
-        evidenceQuery.getCriteria().setBounds(PaginationHelper.rowBounds(evidenceQuery.getPagination()));
+        evidenceQuery.getCriteria().setBounds(PaginationUtils.rowBounds(evidenceQuery.getPagination()));
 
-        return PaginationHelper.execute(evidenceQuery.getPagination()).results(() -> {
+        return PaginationUtils.execute(evidenceQuery.getPagination()).results(() -> {
             return evidenceMapper.getEvidenceList(evidenceQuery.getCriteria());
         }).count(() -> {
             return evidenceMapper.getEvidenceCount();
@@ -58,10 +58,10 @@ public class EvidenceService {
     }
 
     @Transactional
-    public void createEvidence(EvidenceCreate evidenceCreate, byte[] imageBytes) {
+    public void createEvidence(EvidenceCreate evidenceCreate, byte[] contentBytes) {
         EditionCreate editionCreate = new EditionCreate();
 
-        TransactionHelper.executor().execute(() -> {
+        TransactionUtils.executor().execute(() -> {
             return evidenceMapper.createEvidence(evidenceCreate) == OperationResult.CREATE_SUCCESS;
         }).execute(() -> {
             editionCreate.setEvidenceId(evidenceCreate.getEvidenceId());
@@ -69,7 +69,7 @@ public class EvidenceService {
 
             return editionMapper.createEdition(editionCreate) == OperationResult.CREATE_SUCCESS;
         }).execute(() -> {
-            return storageManager.saveImage(imageBytes, editionCreate.getFilename());
+            return storageManager.saveContent(contentBytes, editionCreate.getFilename());
         });
     }
 
@@ -84,7 +84,7 @@ public class EvidenceService {
         if (evidenceMapper.deleteEvidence(evidenceId) != OperationResult.DELETE_SUCCESS) {
             return false;
         } else {
-            storageManager.deleteImages(associatedFilenames);
+            storageManager.deleteContents(associatedFilenames);
             return true;
         }
     }

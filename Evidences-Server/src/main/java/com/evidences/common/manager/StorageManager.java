@@ -24,33 +24,33 @@ public class StorageManager {
         return UUID.randomUUID().toString();
     }
 
-    public boolean saveImage(byte[] imageBytes, String filename) {
+    public boolean saveContent(byte[] imageBytes, String filename) {
         try {
-            Files.write(Paths.get(storageConfig.getImagePath()).resolve(filename), imageBytes);
+            Files.write(Paths.get(storageConfig.getContentPath()).resolve(filename), imageBytes);
             return true;
         } catch (Exception exception) {
             return false;
         }
     }
 
-    public boolean deleteImage(String filename) {
+    public boolean deleteContent(String filename) {
         try {
-            Files.delete(Paths.get(storageConfig.getImagePath()).resolve(filename));
+            Files.delete(Paths.get(storageConfig.getContentPath()).resolve(filename));
             return true;
         } catch (Exception exception) {
             return false;
         }
     }
 
-    public void deleteImages(List<String> filenames) {
+    public void deleteContents(List<String> filenames) {
         for (String filename : filenames) {
-            deleteImage(filename);
+            deleteContent(filename);
         }
     }
 
-    public byte[] getImageBytes(String filename) {
+    public byte[] getContentBytes(String filename) {
         try {
-            return Files.readAllBytes(Paths.get(storageConfig.getImagePath()).resolve(filename));
+            return Files.readAllBytes(Paths.get(storageConfig.getContentPath()).resolve(filename));
         } catch (Exception exception) {
             return null;
         }

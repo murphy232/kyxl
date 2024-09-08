@@ -47,21 +47,21 @@ public class EditionController {
         }
     }
 
-    @RequestMapping("/image")
-    public ResponseEntity<?> getEditionImage(@NotBlank String filename) {
-        byte[] imageBytes = editionService.getEditionImageBytes(filename);
+    @RequestMapping("/content")
+    public ResponseEntity<?> getEditionContent(@NotBlank String filename) {
+        byte[] contentBytes = editionService.getEditionContentBytes(filename);
 
-        if (imageBytes == null) {
+        if (contentBytes == null) {
             return ResponseEntity.notFound().build();
         } else {
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageBytes);
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).body(contentBytes);
         }
     }
 
     @RequestMapping("/create")
-    public ResponseEntity<?> createEdition(@Validated EditionCreate editionCreate, MultipartFile image) {
+    public ResponseEntity<?> createEdition(@Validated EditionCreate editionCreate, MultipartFile content) {
         try {
-            editionService.createEdition(editionCreate, image.getBytes());
+            editionService.createEdition(editionCreate, content.getBytes());
         } catch (Exception exception) {
             return ResponseEntity.badRequest().build();
         }

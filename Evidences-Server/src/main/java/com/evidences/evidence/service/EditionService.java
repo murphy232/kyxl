@@ -2,9 +2,9 @@ package com.evidences.evidence.service;
 
 import com.evidences.common.constant.OperationResult;
 import com.evidences.common.dto.PaginationResult;
-import com.evidences.common.helper.PaginationHelper;
-import com.evidences.common.helper.TransactionHelper;
 import com.evidences.common.manager.StorageManager;
+import com.evidences.common.util.PaginationUtils;
+import com.evidences.common.util.TransactionUtils;
 
 import com.evidences.evidence.dto.EditionCreate;
 import com.evidences.evidence.dto.EditionDetail;
@@ -33,9 +33,9 @@ public class EditionService {
 
     @Transactional
     public PaginationResult getEditionList(EditionQuery editionQuery) {
-        editionQuery.getCriteria().setBounds(PaginationHelper.rowBounds(editionQuery.getPagination()));
+        editionQuery.getCriteria().setBounds(PaginationUtils.rowBounds(editionQuery.getPagination()));
 
-        return PaginationHelper.execute(editionQuery.getPagination()).results(() -> {
+        return PaginationUtils.execute(editionQuery.getPagination()).results(() -> {
             return editionMapper.getEditionList(editionQuery.getCriteria());
         }).count(() -> {
             return editionMapper.getEditionCount();
@@ -47,18 +47,18 @@ public class EditionService {
     }
 
     @Transactional
-    public byte[] getEditionImageBytes(String filename) {
-        return storageManager.getImageBytes(filename);
+    public byte[] getEditionContentBytes(String filename) {
+        return storageManager.getContentBytes(filename);
     }
 
     @Transactional
-    public void createEdition(EditionCreate editionCreate, byte[] imageBytes) {
+    public void createEdition(EditionCreate editionCreate, byte[] contentBytes) {
         editionCreate.setFilename(storageManager.getRandomName());
 
-        TransactionHelper.executor().execute(() -> {
+        TransactionUtils.executor().execute(() -> {
             return editionMapper.createEdition(editionCreate) == OperationResult.CREATE_SUCCESS;
         }).execute(() -> {
-            return storageManager.saveImage(imageBytes, editionCreate.getFilename());
+            return storageManager.saveContent(contentBytes, editionCreate.getFilename());
         });
     }
 
@@ -70,10 +70,10 @@ public class EditionService {
     public void deleteEdition(Integer editionId) {
         EditionDetail editionDetail = editionMapper.getEditionDetail(editionId);
 
-        TransactionHelper.executor().execute(() -> {
+        TransactionUtils.executor().execute(() -> {
             return editionMapper.deleteEdition(editionId) == OperationResult.DELETE_SUCCESS;
         }).execute(() -> {
-            return storageManager.deleteImage(editionDetail.getFilename());
+            return storageManager.deleteContent(editionDetail.getFilename());
         });
     }
 }

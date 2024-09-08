@@ -1,10 +1,10 @@
-package com.evidences.common.helper;
+package com.evidences.common.util;
 
 import com.evidences.common.dto.Pagination;
 import com.evidences.common.dto.PaginationResult;
 import com.evidences.common.dto.RowBounds;
 
-public class PaginationHelper {
+public class PaginationUtils {
     @FunctionalInterface
     public interface QueryCount {
         Integer execute();
@@ -33,7 +33,7 @@ public class PaginationHelper {
             int totalCount = queryCount.execute();
 
             paginationResult.setTotalCount(totalCount);
-            paginationResult.setPageCount(PaginationHelper.pageCount(totalCount, pagination.getPageSize()));
+            paginationResult.setPageCount(PaginationUtils.pageCount(totalCount, pagination.getPageSize()));
 
             return paginationResult;
         }

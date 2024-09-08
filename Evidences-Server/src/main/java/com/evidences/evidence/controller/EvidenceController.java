@@ -45,9 +45,9 @@ public class EvidenceController {
     }
 
     @RequestMapping("/create")
-    public ResponseEntity<?> createEvidence(@Validated EvidenceCreate evidenceCreate, MultipartFile image) {
+    public ResponseEntity<?> createEvidence(@Validated EvidenceCreate evidenceCreate, MultipartFile content) {
         try {
-            evidenceService.createEvidence(evidenceCreate, image.getBytes());
+            evidenceService.createEvidence(evidenceCreate, content.getBytes());
         } catch (Exception exception) {
             return ResponseEntity.badRequest().build();
         }

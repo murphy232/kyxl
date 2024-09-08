@@ -1,6 +1,6 @@
-package com.evidences.common.helper;
+package com.evidences.common.util;
 
-public class TransactionHelper {
+public class TransactionUtils {
     @FunctionalInterface
     public interface TransactionOperation {
         boolean isSuccess();

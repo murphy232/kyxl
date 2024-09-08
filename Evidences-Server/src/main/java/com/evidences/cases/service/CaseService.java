@@ -8,8 +8,8 @@ import com.evidences.cases.mapper.CaseMapper;
 
 import com.evidences.common.constant.OperationResult;
 import com.evidences.common.dto.PaginationResult;
-import com.evidences.common.helper.PaginationHelper;
 import com.evidences.common.manager.StorageManager;
+import com.evidences.common.util.PaginationUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,9 +34,9 @@ public class CaseService {
 
     @Transactional
     public PaginationResult getCaseList(CaseQuery caseQuery) {
-        caseQuery.getCriteria().setBounds(PaginationHelper.rowBounds(caseQuery.getPagination()));
+        caseQuery.getCriteria().setBounds(PaginationUtils.rowBounds(caseQuery.getPagination()));
 
-        return PaginationHelper.execute(caseQuery.getPagination()).results(() -> {
+        return PaginationUtils.execute(caseQuery.getPagination()).results(() -> {
             return caseMapper.getCaseList(caseQuery.getCriteria());
         }).count(() -> {
             return caseMapper.getCaseCount();
@@ -62,7 +62,7 @@ public class CaseService {
         if (caseMapper.deleteCase(caseId) != OperationResult.DELETE_SUCCESS) {
             return false;
         } else {
-            storageManager.deleteImages(associatedFilenames);
+            storageManager.deleteContents(associatedFilenames);
             return true;
         }
     }

@@ -9,7 +9,7 @@
         FROM `user` WHERE `user_id` = #{username} AND `password` = #{password}
     </select>
     
-    <select id="getUserDetail" resultType="com.evidences.user.dto.UserStatistics">
+    <select id="getUserStatistics" resultType="com.evidences.user.dto.UserStatistics">
         SELECT `user_id`,
                `name`,
                `telephone`,
